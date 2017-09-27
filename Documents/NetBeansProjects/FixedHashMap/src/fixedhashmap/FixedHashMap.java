@@ -59,6 +59,7 @@ public class FixedHashMap {
                 keys[i] = "";
                 values[i] = null;
                 occupied[i] = false;
+                items--;
                 return true;
             }
         }

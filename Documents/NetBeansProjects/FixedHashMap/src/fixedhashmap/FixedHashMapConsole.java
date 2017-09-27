@@ -64,7 +64,15 @@ public class FixedHashMapConsole {
                             System.out.println("The FixedHashMap is full.  Remove some objects first.");
                         }
                     } else if (type == 3) {
-
+                        try {
+                            boolean set3 = map.set(key, new FixedHashMapNode3());
+                            if (!set3) {
+                                System.out.println("Error.  Insertion of the new object failed.  Try again.");
+                            }
+                        }
+                        catch (IllegalArgumentException e) {
+                            System.out.println("The FixedHashMap is full.  Remove some objects first.");
+                        }
                     } else {
                         System.out.println("Invalid input.  Try again.");
                     }
