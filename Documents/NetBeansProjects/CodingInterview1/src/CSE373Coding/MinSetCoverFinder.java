@@ -1,6 +1,7 @@
 package CSE373Coding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -21,7 +22,6 @@ public class MinSetCoverFinder {
         int[] universalSet = new int[u];
         int[] appearances = new int[u];
         ArrayList[] appearanceList = new ArrayList[u];
-        int[] covered = new int[u];
         for (int i = 0; i < universalSet.length; i++) {
             universalSet[i] = i + 1;
         }
@@ -37,7 +37,8 @@ public class MinSetCoverFinder {
             }
         }
         
-        // Algorithm for determining the minimum set cover
+        // Algorithm for determining the minimum set cover --> USE BACKTRACKING
+        
         
         // find elements that only appear once
         for (int i = 0; i < subsets.length; i++) {
@@ -78,13 +79,15 @@ public class MinSetCoverFinder {
         }
     }
     
-    public static void coverSubset(ArrayList<Integer> a) {
+    // When we add to the set cover, go into the covered array and mark the appropriate elements as covered
+    public static void coverSubset(ArrayList<Integer> a, int[] appearances) {
         for (int i = 0; i < a.size(); i++) {
-            
+            appearances[a.get(i) - 1]++;
         }
     }
     
-    public static boolean isASolution(int[] appearances) {
+    // Determine if every universal element is covered
+    public static boolean isASolution(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances) {
         for (int i = 0; i < appearances.length; i++) {
             if (appearances[i] <= 0) {
                 return false;
@@ -93,5 +96,36 @@ public class MinSetCoverFinder {
         return true;
     }
     
+    // If we are given a solution, proces it
+    public void processSolution(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances) {
+        System.out.println(solutionVector.toString());
+    }
     
+    // Construct our candidates --> Is this correct?
+    public ArrayList constructCandidates(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances) {
+        // A candidate is a subset used to create the minimum set cover
+        ArrayList candidates = new ArrayList<>(); // Correct solution? Ask about this in office hours today
+        // Anything not in the solution vector yet can be a candidate
+        for (int i = 0; i < subsets.length; i++) {
+            if (!(solutionVector.contains(subsets[i]))) {
+                candidates.add(subsets[i]);
+            }
+        }
+        return candidates;
+    }
+    
+    // Backtracking function
+    public void backtrack(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances) {
+        if (isASolution(solutionVector, k, subsets, appearances)) {
+            processSolution(solutionVector, k, subsets, appearances);
+        }
+        else {
+            k++;
+            ArrayList candidates = constructCandidates(solutionVector, k, subsets, appearances);
+            
+            for (int i = 0; i < candidates.size(); i++) {
+                
+            }
+        }
+    }
 }
