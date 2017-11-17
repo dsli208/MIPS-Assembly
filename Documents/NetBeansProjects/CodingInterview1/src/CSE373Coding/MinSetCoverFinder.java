@@ -15,16 +15,19 @@ import java.util.Scanner;
  * @author dsli
  */
 public class MinSetCoverFinder {
+
     ArrayList<ArrayList> solutionVector;
     boolean printed;
     ArrayList<ArrayList<ArrayList>> solutionList;
     ArrayList[] subsets;
     int[] appearances;
-    
+
     public MinSetCoverFinder(ArrayList[] subsets, int[] appearances) {
         this.printed = false;
         this.solutionVector = new ArrayList<ArrayList>();
         this.solutionList = new ArrayList<ArrayList<ArrayList>>();
+        this.appearances = appearances;
+        this.subsets = subsets;
     }
 
     // Determines whether an element in the universal set is covered
@@ -84,7 +87,7 @@ public class MinSetCoverFinder {
     }
 
     // If we are given a solution, proces it
-    public void processSolution(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances, ArrayList<ArrayList<ArrayList>> solutionList) {
+    public void processSolution(ArrayList<ArrayList> solutionVector, int k) {
         int minsets = subsets.length;
         ArrayList<ArrayList> minSubset = new ArrayList<ArrayList>();
         for (int i = 0; i < solutionList.size(); i++) {
@@ -99,7 +102,7 @@ public class MinSetCoverFinder {
     }
 
     // Construct our candidates --> Is this correct?
-    public ArrayList<ArrayList> constructCandidates(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances) {
+    public ArrayList<ArrayList> constructCandidates(ArrayList<ArrayList> solutionVector, int k) {
         // A candidate is a subset used to create the minimum set cover
         ArrayList candidates = new ArrayList<>(); // Correct solution? Ask about this in office hours today
         // Anything not in the solution vector yet can be a candidate
@@ -112,22 +115,19 @@ public class MinSetCoverFinder {
     }
 
     // Backtracking function
-    public void backtrack(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances, ArrayList<ArrayList<ArrayList>> solutionList) {
+    public void backtrack(ArrayList<ArrayList> solutionVector, int k) {
         if (isASolution(solutionVector, k, subsets, appearances, solutionList)) {
             solutionList.add(solutionVector);
-            //if (!printed) {
-            processSolution(solutionVector, k, subsets, appearances, solutionList);
-            printed = true;
-            //System.exit(0);
-            //}
+            processSolution(solutionVector, k);
+            System.exit(0);
         } else {
-            ArrayList<ArrayList> candidates = constructCandidates(solutionVector, k, subsets, appearances);
+            ArrayList<ArrayList> candidates = constructCandidates(solutionVector, k);
 
             for (int i = 0; i < candidates.size(); i++) {
                 ArrayList candidate = candidates.get(i);
                 coverSubset(candidate, appearances);
                 solutionVector.add(candidate);
-                backtrack(solutionVector, k + 1, subsets, appearances, solutionList);
+                backtrack(solutionVector, k + 1);
                 solutionVector.remove(candidate);
                 uncoverSubset(candidate, appearances);
 
@@ -136,12 +136,17 @@ public class MinSetCoverFinder {
         }
     }
 
+    public void backtrackStart(ArrayList<ArrayList> solutionVector, int k, ArrayList[] subsets, int[] appearances, ArrayList<ArrayList<ArrayList>> solutionList) {
+        backtrack(solutionVector, k);
+        
+    }
 }
 
 class Driver {
+
     public static void main(String[] args) throws FileNotFoundException {
         // Taking in the input - EDIT THE STRING PARAMETER OF FILE TO ACCOMMODATE YOUR FILE INPUT
-        File f = new File("C:\\Users\\dsli\\OneDrive\\College\\CSE 373\\s-rg-8-10.txt");
+        File f = new File("C:\\Users\\dsli\\OneDrive\\College\\CSE 373\\s-k-30-50.txt");
         Scanner reader = new Scanner(f);
         String uLine = reader.nextLine();
         int u = Integer.parseInt(uLine);
@@ -174,7 +179,7 @@ class Driver {
         ArrayList<ArrayList> solutionVector = new ArrayList<ArrayList>();
         ArrayList<ArrayList<ArrayList>> solutions = new ArrayList<ArrayList<ArrayList>>();
         MinSetCoverFinder m = new MinSetCoverFinder(subsets, appearances);
-        m.backtrack(solutionVector, 0, subsets, appearances, solutions);
+        m.backtrack(solutionVector, 0);
         /*// find elements that only appear once
         for (int i = 0; i < subsets.length; i++) {
             ArrayList<Integer> currSubset = subsets[i];
