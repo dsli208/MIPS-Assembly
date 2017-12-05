@@ -1,0 +1,26 @@
+.data
+
+string: .asciiz "1"
+
+.text
+
+main:
+
+la $a0, string
+
+strlen:
+li $t0, 0 #initialize counter to 0
+loop:
+lb $t1, 0($a0)
+beqz $t1, done
+addi $a0, $a0, 1
+addi $t0, $t0, 1
+j loop
+
+done:
+li $v0, 1
+move $a0, $t0
+syscall
+
+li $v0, 10
+syscall

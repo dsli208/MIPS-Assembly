@@ -1,0 +1,38 @@
+#addi $t1 $a1 -1 # $t1 = num_rows - 1 --> i_max
+    #li $t2 2 # $t2 = size_of(obj) = 2
+    #mult $t1 $a2 # $t3 = row_size = 2 * num_cols
+    #mflo $t1
+    #mult $t1 $t3 # $t1 = row_size * i_max
+    #mflo $t1
+    #add $t0 $t0 $t1 # $t0 += (row_size * i_max)
+    
+    addi $t1 $a1 -1
+    mult $t1 $a2
+    mflo $t1
+    add $t0 $t0 $t1
+    
+    addi $t1 $a2 -1 # $t1 = num_cols - 1 --> j_max
+    li $t2 2 # $t2 = size_of(obj) = 2
+    mult $t1 $t2
+    mflo $t1 # $t1 = (size_of(obj) * j_max)
+    add $t0 $t0 $t1 # $t0 += size_of(obj) * j_max
+
+### FROM GET_SLOT FUNCTION ######
+
+#addi $t1 $s1 -1 # $t1 = num_rows - 1 --> i_max
+    #li $t2 2 # $t2 = size_of(obj) = 2
+    #mult $t1 $t2
+    #mflo $t3 # $t3 = row_size = num_cols * 2
+    #mult $t3 $s2 # $t1 = row_size * i_max
+    
+    addi $t1 $s1 -1
+    mult $t1 $s1
+    mflo $t1
+    
+    add $t0 $t0 $t1 # $t0 += (row_size * i_max)
+    
+    addi $t1 $s2 -1 # $t1 = num_cols - 1 --> j_max
+    
+    mult $t1 $t2
+    mflo $t1 # $t1 = (size_of(obj) * j_max)
+    add $t0 $t0 $t1 # $t0 += size_of(obj) * j_max

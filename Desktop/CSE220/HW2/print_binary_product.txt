@@ -1,0 +1,42 @@
+search_loop: # look for either a '.' or a '1'
+    	lb $t0 0($s0)
+    	li $t1 46
+    	addi $s0 $s0 1
+    	beq $t0 $t1 search_for_one
+    	addi $t0 $t0 -48
+    	beqz $t0 search_loop
+    	li $t1 1
+    	beq $t0 $t1 search_for_dot # one has been found, branch
+   	
+    	search_for_one:
+    	addi $t2 $t2 -1
+    	lb $t0 0($s0)
+    	li $t1 1
+    	beq $t0 $t1 get_Mantissa
+    	addi $s0 $s0 1
+    	b search_for_one
+    	
+    	search_for_dot:
+    	addi $s0 $s0 1
+    	lb $t0 0($s0)
+    	li $t1 46
+    	beq $t0 $t1 get_Mantissa
+    	addi $t2 $t2 1
+    	b search_for_dot
+
+get_Mantissa:
+    	addi $s0 $s0 1
+    	lb $t0 0($s0)
+    	beqz $t0 done_binary_product
+    	li $t1 10
+    	beq $t0 $t1 done_binary_product
+    	move $a0 $t0
+    	jal char2digit
+    	or $t7 $t7 $v0
+    	sll $t7 $t7 1
+    	b get_Mantissa
+    	
+    	done_binary_product:
+    	move $a0 $t7
+    	li $a1 23
+    	jal printNbitBinary

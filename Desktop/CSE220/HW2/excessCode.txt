@@ -1,0 +1,46 @@
+Excess HW 2 Text: CSE 220
+
+printNBitBinary:
+
+# move $t1 $a0
+	# move $t2 $a1
+	li $t4 0 # bit counter
+	# determine positive or negative - if negative, be sure to list it as the proper 2 complement form
+	li $t3 0 # the positive/negative marker - 0 is positive, 1 is negative
+	bge $a0 $t3 makeNBitBinaryString_while # $a0, the value, if positive, will not require 2 complement conversion
+	li $t3 1 # if the value is negative, this is a "boolean" marker that says so
+	makeNBitBinaryString_while:
+	li $t5 2 # base to divide by for binary
+	beqz $a0, signExtend_while
+	bge $t4 $t1, maxBitsReached
+	div $a0 $t5
+	mflo $a0 # new quotient
+	mfhi $t6 # new remainder
+	beqz $t3, printPositiveNbitBinary
+	printNegativeNbitBinary:
+	# How to handle where you have to add 1?
+	
+	
+	
+	printPositiveNbitBinary:
+	addi $t6 $t6 48
+	sb $t6, 0($t0)
+	addi $t0 $t0 -1 # decrement String pointer by 1
+	j makeNBitBinaryString_while
+	signExtend_while:
+	bge $t4, $t1, maxBitsReached
+	beqz $t3, printPositiveNSignBit
+	printNegativeNSignBit:
+	li $t7 49
+	sb $t7, 0($t0)
+	addi $t0 $t0 -1
+	j signExtend_while
+	printPositiveNSignBit:
+	li $t7 48
+	sb $t7, 0($t0)
+	addi $t0 $t0 -1
+	j signExtend_while
+	maxBitsReached:
+	# do we throw error if the decimal number is too large?
+	
+	beqz $a0, success

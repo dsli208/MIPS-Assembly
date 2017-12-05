@@ -1,0 +1,52 @@
+public float btof(char[] input) {
+	int i = 0;
+	//First, load the sign bit
+	if (input[i] == '-') {
+		//load a 1 and shift it left 8
+		i++;
+	}
+	else {
+		//load a 0 and shift it left 8
+		if (input[i] == '+')
+			i++;
+	}
+
+	//Now, get the exponent part
+	char c = input[i];
+	while (c != '.' && c != '1' && i < input.length) {
+		i++;
+		c = input[i];
+		if (c != '.' && c != '1' && c != '0')
+			//error
+	}
+	int j = i;
+	char d = input[j];
+	if (d == '1') {
+		while (d != '.') {
+			j++;
+			d = input[j];
+			if (d != '0' && d != '1' && d != '.')
+				//error
+		}
+		int diff = j - i - 1;
+		int bias = 127 - diff;
+		// store to register and shift
+	}
+	else { // (d == '.')
+		while (d != '1') {
+			j++;
+			d = input[j];
+			if (d != '0' && d != '1')
+				//error
+		}
+		int diff = i - j;
+		int bias = 127 - diff;
+		//store to register and shift
+	}
+
+	// OR the 8-bit binary form of bias with the sign bit (in its binary form)
+
+	j++; // move to the "mantissa" portion
+	
+	//Mantissa algorithm 
+}

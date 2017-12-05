@@ -1,0 +1,34 @@
+############################################################################################
+    	getMantissa: # Work on this portion, you're almost done with (e)!
+    	sll $t7 $t7 14 # shift the OR'ed sign bit and exponent to make room for the mantissa
+    	li $t3 0 # Mantissa sum
+    	li $t4 23
+    	
+    	while_getMantissa: # while loop - "while (c != null)"
+    	li $t5 0 # counter for adding loop below
+    	li $t6 1 # multiplier for adding loop below
+    	addi $s0 $s0 1
+    	lb $a0 0($s0)
+    	beqz $a0 done # if the character loaded is null - we are at the end of char[] input
+    	li $t1 10
+    	beq $a0 $t1 done # should we handle newlines as well?
+    	# SAVE YOUR RETURN ADDRESS BEFORE CALLING THE BELOW FUNCTION
+    	jal char2digit # btofError mysteriously jumps to here for some reason
+    	li $t1 1
+    	beq $v0 $t1 addToMantissaSum
+    	addi $t4 $t4 -1
+    	beqz $v0 while_getMantissa
+    	b btofError
+    	
+    	addToMantissaSum:
+    	beq $t4 $t5 done_addMantissaSum
+    	li $t1 2
+    	mult $t1 $t6
+    	mflo $t6
+    	addi $t5 $t5 1
+    	b addToMantissaSum
+    	
+    	done_addMantissaSum:
+    	add $t3 $t3 $t6
+    	b while_getMantissa
+    	######################################################################################################

@@ -1,0 +1,20 @@
+# $s0 = starting address
+
+# $t1 = (row_size * row) = (num_cols * 2 * row)
+
+li $t1 2
+mult $t1 $a2
+mflo $t1
+mult $t1 $s1
+mflo $t1
+
+# $t0 = $s0 + $t1 --> $t0 = base_address + (num_cols * 2 * row)
+add $t0 $s0 $t1
+
+# $t1 = (2 * col)
+li $t1 2
+mult $s2 $t1
+mflo $t1
+
+# $t0 = $t0 (as calculated above) + $t1 = base_address + (num_cols * 2 * row) + (2 * col)
+add $t0 $t0 $t1

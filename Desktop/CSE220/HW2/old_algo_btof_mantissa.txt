@@ -1,0 +1,54 @@
+bgtz $t2 swapChars_oneFirst
+    	bltz $t2 swapChars_dotFirst
+    	#b traverseForDot ####
+    	
+    	swapChars_oneFirst:
+    	lb $t0 0($t3)
+    	beq $t0 $t4 swapChars_add
+    	addi $t3 $t3 1
+    	b swapChars_oneFirst
+    	
+    	swapChars_add:
+    	addi $t2 $t2 1
+    	add $t5 $t3 $t2 #$t5 refers to the '.'
+    	addi $t3 $t3 1 #$t3 refers to the char after the '1', last char to swap with
+    	swapChars_oneFirst_loop:
+    	beq $t5 $t3 done_loop
+    	addi $t6 $t5 -1
+    	lb $t4 0($t6)
+    	lb $t0 0($t5)
+    	sb $t0 0($t6)
+    	sb $t4 0($t5)
+    	addi $t5 $t5 -1
+    	b swapChars_oneFirst_loop
+    	
+    	swapChars_dotFirst:
+    	lb $t0 0($t3)
+    	beq $t0 $t4 swapChars_dotFirst_preLoop
+    	addi $t3 $t3 1
+    	b swapChars_dotFirst
+    	
+    	swapChars_dotFirst_preLoop:
+    	add $t5 $t3 $t2
+    	addi $t3 $t3 1
+    	
+    	swapChars_dotFirst_loop:
+    	beq $t5 $t3 done_preloop
+    	addi $t6 $t5 -1
+    	lb $t4 0($t6)
+    	lb $t0 0($t5)
+    	sb $t4 0($t5)
+    	sb $t0 0($t6)
+    	addi $t5 $t5 -1
+    	b swapChars_dotFirst_loop
+    	
+    	done_preloop:
+    	li $t4 23 # counter for the "done" loop
+    	done_loop:
+    	lb $a0 0($t3)
+    	beqz $t4 done_btof
+    	jal char2digit
+    	or $t2 $t2 $v0
+    	sll $t2 $t2 1
+    	addi $t4 $t4 -1
+    	b done_loop

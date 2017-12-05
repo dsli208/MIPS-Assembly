@@ -1,0 +1,95 @@
+# stack pointer
+    	move $s0 $a0
+    	addi $sp $sp -8
+    	sw $s0 0($sp)
+    	
+    	getSign:
+    	lb $t0 0($a0)
+    	# Is the first char positive or negative?
+    	# Negative (-)?
+    	li $t1 45
+    	beq $t0 $t1 load1SignBit
+    	# if the above condition is not met, that means the number is positive
+    	# load a 0 as the sign bit
+    	
+    	li $t1 43 # check to see if the character is a '+'
+    	bne $t0 $t1 while_exponent1 # if not, we are already on a '0' or '1' digit, presumably
+    	# if the above statement does not execute, we are presumed to be at '+', so increment to the next character
+    	addi $a0 $a0 1
+    	j while_exponent1
+    	load1SignBit:
+    	# code for loading the 1 as the sign bit
+    	
+    	# increment along the "String" by 1
+    	addi $a0 $a0 1
+    	while_exponent1: # look for the first 1
+    	li $t1 49 # '1' is what we are looking for (the first '1')
+    	lb $t0 0($a0) # keep loading chars 
+    	beq $t0 $t1 pre_exponentDot # if we find our first '1', branch to the below label
+    	li $t1 46 # else, we must make sure the character is a '0' or '.', if not a '1', or we will have an error
+    	beq $t0 $t1, pre_exponentOne # if this executes, we have found a decimal point BEFORE the first one
+    	li $t1 48 # load the '0' char into $t1
+    	bne $t0 $t1, btofError # if this executes, we have found an ILLEGAL character
+    	# if not, the character we are at is a '0'
+    	addi $a0 $a0 1 # increment to the next char in the array
+    	j while_exponent1 # begin the next iteration of the look (at the next char in the array)
+    	pre_exponentDot: # this label will execute, should we find a '1' before the decimal point, so we will then look for the decimal point
+    	#li $t1 49 # $t1 represents the value we are looking for '1'
+    	li $t3 0 # $t3 serves as a counter variable as to how many spaces we need to increment before the 1
+    	
+    	while_exponentDot:
+    	addi $a0 $a0 1
+    	addi $t3 $t3 1
+    	li $t1 46
+    	lb $t0 0($a0) # load each char in the array
+    	beq $t0 $t1, getPositiveExponent # If the char is the '.', get how many spaces ahead of the '1' the '.' is (positive #)
+    	# else, make sure the char is still valid ('0' or '1')
+    	li $t1 48
+    	blt $t0 $t1 btofError
+    	li $t1 49
+    	bgt $t0 $t1 btofError # if ($t0 < '0' || $t0 > '1'): error
+    	# if none of the above branch statements occur, we have '0' or '1'. Else, repeat the loop, incrementing again
+    	j while_exponentDot
+    	pre_exponentOne:
+    	#li $t1 46 # $t1 represents the value we are looking for '.'
+    	li $t3 0 # $t3 serves as a counter variable as to how many spaces we need to increment before the 1
+    	while_exponentOne:
+    	addi $a0 $a0 1 # increment String pointer by one every step
+    	addi $t3 $t3 1 # increment $t3 for every char evaluated
+    	li $t1 49 # load '1' into $t1
+    	lb $t0 0($a0) # load char at each position in the char array
+    	beq $t0 $t1 getNegativeExponent # if we have found a 1, find the number of decimal places to shift the '.'
+    	li $t1 48 # load '0' in $t1
+    	bne $t0 $t1 btofError # if the char $t0 is not '0', given it isn't '1', we have an error
+    	# else, increment to the next char
+    	j while_exponentOne
+    	
+    	getNegativeExponent:
+    	li $t4 127
+    	sub $t4 $t4 $t3 #get bias
+    	li $t3 23
+    	j get8_bit_exp
+    	getPositiveExponent:
+    	addi $t3 $t3 -1 # correcting "error"
+    	li $t4 127
+    	add $t4 $t4 $t3 # get your bias
+    	li $t3 23
+    	j get8_bit_exp
+    	get8_bit_exp:
+    	# get the exponent - finish this part, code will not run without this
+    	
+    	getFrac:
+    	addi $a0 $a0 1
+    	lb $t0 0($a0)
+    	beqz $t3 done
+    	beqz $t0 appendZeroes
+	addi $t3 $t3 -1
+    	# store it in the same (String/buffer?) as the sign bit and exponent (what address?)
+    	
+    	j getFrac
+    	
+    	appendZeroes:
+    	
+    	done:
+    	
+    	jr $ra
